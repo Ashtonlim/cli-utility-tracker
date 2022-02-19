@@ -52,13 +52,23 @@ def readCsvByCol(csvReader, col):
 def readCsvByCols(csvReader, cols):
     firstRow = next(csvReader)
     
-    data = [[v] for i, v in enumerate(firstRow) if i in cols]
+    # initialise list of empty lists
+    data = [[] for _ in firstRow]
+
+    # fill each empty list with the corresponding element in first row
+    # e.g. [[gab], [1], [1]]
+    for i, v in enumerate(firstRow):
+        if i in cols:
+            data[i].append(v)
+
+    # same as above but with the rest of the elements if any
+    # e.g. [[gab, jack], [1, 2], [1, 2]]
     for row in csvReader:
         for j, v in enumerate(row):
             if j in cols:
                 data[j].append(v)
 
-    return data
+    return [item for item in data if item]
 
 def getHeadersByName(filename):
     try:
@@ -110,14 +120,24 @@ def readFileIntoDict(filename, cols = []):
                 
             if len(cols) > 1:
                 firstRow = next(csvReader)
-                data = [[v] for i, v in enumerate(firstRow.values())]
-                print('firstRow', firstRow, data)
+
+                # initialise list of empty lists
+                data = [[] for _ in firstRow]
+
+                # fill each empty list with the corresponding element in first row
+                # e.g. [[gab], [1], [1]]
+                for i, v in enumerate(firstRow.values()):
+                    if i in cols:
+                        data[i].append(v)
+
+                # same as above but with the rest of the elements if any
+                # e.g. [[gab, jack], [1, 2], [1, 2]]
                 for row in csvReader:
                     for j, v in enumerate(row.values()):
                         if j in cols:
                             data[j].append(v)
 
-                return data
+                return [item for item in data if item]
                 # return readCsvByCols(csvReader, cols)
             elif len(cols) == 1:
                 return readCsvByCol(csvReader, cols[0])
@@ -130,12 +150,19 @@ def readFileIntoDict(filename, cols = []):
 
         print("Initialising CSV database...")
 
-# print(readFileU(fname))
-# print(readFileU(fname, [0]))
-# print(readFileU(fname, getHeadersByNum(fname)))
+print(readFileU(fname))
+print()
+print(readFileU(fname, [0]))
+print()
+print(readFileU(fname, [1,2]))
 
-# print()
+print()
+print()
+print()
+print()
 
-# print(readFileIntoDict(fname))
+print(readFileIntoDict(fname))
+print()
 print(readFileIntoDict(fname, ['username']))
+print()
 print(readFileIntoDict(fname, getHeadersByNum(fname)))
