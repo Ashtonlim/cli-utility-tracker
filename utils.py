@@ -132,6 +132,26 @@ def getByID(filename, ID):
         print("Initialising CSV database...")
 
 
+
+def getByIDAsDict(filename, ID):
+    try:
+        with open(filename, 'r') as f:
+            csvReader = csv.DictReader(f)
+
+            if not csvHasHeader(filename):
+                print('cannot turn into a dict without headers')
+                return None
+
+            for row in csvReader:
+                print(row['username'])
+                if ID == row['username']:
+                    return row
+
+            return None
+            
+    except IOError:
+        print("Initialising CSV database...")
+
 # reads as a dict
 def readFileIntoDict(filename, cols = []):
     try:

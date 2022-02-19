@@ -1,5 +1,5 @@
 
-from utils import intInput, userSelect, getByID, readFile, readFileIntoDict, appendFileDict, writeFile, appendFile
+from utils import intInput, userSelect, getByID, readFile, readFileIntoDict, appendFileDict, writeFile, appendFile, getByIDAsDict
 
 userDB = 'username_db.csv'
 
@@ -52,8 +52,7 @@ elif opts[selected] == exists:
     else:
         print('no users in database, please create user first')
     
-    output = getByID(userDB, userData['username'])
-    print('here', output)
+    output = getByIDAsDict(userDB, userData['username'])
 
 # ======= Existing user flow =======
 
@@ -62,6 +61,7 @@ else:
 
 if userData['username'] != '':
     print(f'Welcome {userData["username"]}')
+    print(f'Info: {output}')
 
 print('End of program')
 
