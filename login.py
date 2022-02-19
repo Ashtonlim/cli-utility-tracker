@@ -21,21 +21,19 @@ print(f'Selected: {selected}) {opts[selected]}')
 # ======= New user flow =======
 
 if opts[selected] == new:
-    output = readFileIntoDict(userDB)
+    # output = readFileIntoDict(userDB)
     usernameList = readFileIntoDict(userDB, ['username'])
     print(f'output2 {usernameList}')
     
-    if output:
+    if usernameList:
         userData['username'] = input("Enter your username: ")
-        # nameTaken = True
         while userData['username'] in usernameList:
-            # first column = row[0] = username.
             userData['username'] = input("Username is taken, please enter another a username: ")
-            # nameTaken = False
                 
         userData['waterRate'] = intInput("Please enter your water unit price: ")
         userData['elecRate'] = intInput("Please enter your electricity unit price: ")
         print('heree', userData)
+    
 
     appendFileDict(userDB, [userData])
 
@@ -44,18 +42,18 @@ if opts[selected] == new:
 # ======= Existing user flow =======
     
 elif opts[selected] == exists:
-    username = input("Enter your username: ")
-    output = readFileIntoDict(userDB)
+    
+    usernameList = readFileIntoDict(userDB, ['username'])
 
-    if output:
-        nameNotFound = True
-        while nameNotFound:
-            for row in output:
-                # first column = row[0] = username.
-                if userData['username'] == row['username']:
-                    nameNotFound = False
-                    break
-            username = input("Username not found, please try again: ")
+    if usernameList:
+        userData['username'] = input("Enter your username: ")
+        while userData['username'] not in usernameList:
+            userData['username'] = input("Username not found, please enter another a username: ")
+    
+    output = readFileIntoDict(userDB)
+    
+
+    print('here', userData)
 
     # for row in output:
     #     # first column = row[0] = username.

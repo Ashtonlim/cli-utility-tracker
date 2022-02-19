@@ -104,31 +104,38 @@ def readFileIntoDict(filename, cols = []):
         with open(filename, 'r') as f:
             csvReader = csv.DictReader(f, delimiter=',')
 
-            if csvHasHeader(filename):
-                headers = next(csvReader, None)  # skip the headers
-                print(f'Headers: {headers}')
-                
-                if len(cols) > 1:
-                    return readCsvByCols(csvReader, cols)
-                elif len(cols) == 1:
-                    return readCsvByCol(csvReader, cols[0])
-
-                # returns list of dicts
-                return readCsv(csvReader)
-                
-            else:
+            if not csvHasHeader(filename):
                 print('cannot turn into a dict without headers')
+                return None
+                
+            if len(cols) > 1:
+                firstRow = next(csvReader)
+                data = [[v] for i, v in enumerate(firstRow.values())]
+                print('firstRow', firstRow, data)
+                for row in csvReader:
+                    for j, v in enumerate(row.values()):
+                        if j in cols:
+                            data[j].append(v)
+
+                return data
+                # return readCsvByCols(csvReader, cols)
+            elif len(cols) == 1:
+                return readCsvByCol(csvReader, cols[0])
+
+            # returns list of dicts
+            return readCsv(csvReader)
+                
 
     except IOError:
 
         print("Initialising CSV database...")
 
-print(readFileU(fname))
-print(readFileU(fname, [0]))
-print(readFileU(fname, getHeadersByNum(fname)))
+# print(readFileU(fname))
+# print(readFileU(fname, [0]))
+# print(readFileU(fname, getHeadersByNum(fname)))
 
-print()
+# print()
 
-print(readFileIntoDict(fname))
+# print(readFileIntoDict(fname))
 print(readFileIntoDict(fname, ['username']))
-# print(readFileIntoDict(fname, getHeadersByNum(fname)))
+print(readFileIntoDict(fname, getHeadersByNum(fname)))
