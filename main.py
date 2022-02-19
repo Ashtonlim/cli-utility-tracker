@@ -1,9 +1,7 @@
 unit_price = {'water': 3.69, 'elec': 27.22}
 
 emax_spending = [100]
-wmax_spending = [100]
-
-userData = {'username': '', 'waterRate': 0, 'elecRate': 0, 'wMaxSpending': 0, 'eMaxSpending': 0, 'e'}
+wmax_spending = [100]        
 
 if emax_spending == []:
     while True:
@@ -13,8 +11,8 @@ if emax_spending == []:
             print("Sorry, I didn't understand that.")
             continue
         else:
-            userData['eMaxSpending'] = espending
-            eamount = userData['eMaxSpending'] / unit_price['elec']
+            emax_spending.append(espending)
+            eamount = emax_spending[0] / unit_price['elec']
             print(round(eamount, 2), "kwh left this month")
             break
     
