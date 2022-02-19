@@ -12,7 +12,7 @@ if emax_spending == []:
             continue
         else:
             emax_spending.append(espending)
-            eamount = emax_spending[0] / unit_price['elec']    
+            eamount = emax_spending[0] / unit_price['elec']
             print(round(eamount, 2), "kwh left this month")
             break
     

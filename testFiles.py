@@ -1,6 +1,8 @@
 import csv
-from email import header
 import os
+
+fname = 'username_db.csv'
+
 
 def intInput(prompt = 'Enter an integer number: '):
     while True:
@@ -86,24 +88,47 @@ def readFileU(filename, cols = []):
                 headers = next(csvReader, None)  # skip the headers
                 print(f'Headers: {headers}')
                 
+            if len(cols) > 1:
+                return readCsvByCols(csvReader, cols)
+            elif len(cols) == 1:
+                return readCsvByCol(csvReader, cols[0])
+
+            return readCsv(csvReader)
+
+    except IOError:
+        print("Initialising CSV database...")
+
+
+def readFileIntoDict(filename, cols = []):
+    try:
+        with open(filename, 'r') as f:
+            csvReader = csv.DictReader(f, delimiter=',')
+
+            if csvHasHeader(filename):
+                headers = next(csvReader, None)  # skip the headers
+                print(f'Headers: {headers}')
+                
                 if len(cols) > 1:
                     return readCsvByCols(csvReader, cols)
                 elif len(cols) == 1:
                     return readCsvByCol(csvReader, cols[0])
 
+                # returns list of dicts
                 return readCsv(csvReader)
                 
             else:
-                if len(cols) > 1:
-                    return readCsvByCols(csvReader)
-                elif len(cols) == 1:
-                    return readCsvByCol(csvReader)
-
-                return readCsv(csvReader)
+                print('cannot turn into a dict without headers')
 
     except IOError:
+
         print("Initialising CSV database...")
 
-fname = 'username_db.csv'
-
+print(readFileU(fname))
+print(readFileU(fname, [0]))
 print(readFileU(fname, getHeadersByNum(fname)))
+
+print()
+
+print(readFileIntoDict(fname))
+print(readFileIntoDict(fname, ['username']))
+# print(readFileIntoDict(fname, getHeadersByNum(fname)))
