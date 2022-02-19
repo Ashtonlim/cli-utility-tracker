@@ -1,5 +1,5 @@
 
-from utils import intInput, userSelect, readFile, readFileIntoDict, appendFileDict, writeFile, appendFile
+from utils import intInput, userSelect, getByID, readFile, readFileIntoDict, appendFileDict, writeFile, appendFile
 
 userDB = 'username_db.csv'
 
@@ -23,18 +23,18 @@ print(f'Selected: {selected}) {opts[selected]}')
 if opts[selected] == new:
     # output = readFileIntoDict(userDB)
     usernameList = readFileIntoDict(userDB, ['username'])
-    print(f'output2 {usernameList}')
+    print(f'list of users: {usernameList}')
     
     if usernameList:
         userData['username'] = input("Enter your username: ")
         while userData['username'] in usernameList:
             userData['username'] = input("Username is taken, please enter another a username: ")
-                
+
         userData['waterRate'] = intInput("Please enter your water unit price: ")
         userData['elecRate'] = intInput("Please enter your electricity unit price: ")
-        print('heree', userData)
-    
 
+    print('heree', userData)
+    
     appendFileDict(userDB, [userData])
 
 # ======= New user flow =======
@@ -49,23 +49,20 @@ elif opts[selected] == exists:
         userData['username'] = input("Enter your username: ")
         while userData['username'] not in usernameList:
             userData['username'] = input("Username not found, please enter another a username: ")
+    else:
+        print('no users in database, please create user first')
     
-    output = readFileIntoDict(userDB)
-    
-
-    print('here', userData)
-
-    # for row in output:
-    #     # first column = row[0] = username.
-    #     if username == row[0]:
-    #         username = input("Username does not exist, please try again: ")
+    output = getByID(userDB, userData['username'])
+    print('here', output)
 
 # ======= Existing user flow =======
 
 else:
     exit()
 
-print(f'Welcome {userData["username"]}')
+if userData['username'] != '':
+    print(f'Welcome {userData["username"]}')
+
 print('End of program')
 
 

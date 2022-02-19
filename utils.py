@@ -55,9 +55,17 @@ def userSelect(options):
         pass
     return None
 
-
+# rows = []
+# # checks if username already
+# for row in csvReader:
+#     rows.append(row)
+# return rows
+# fn below is equivalent to the above 
 def readCsv(csvReader):
     return [row for row in csvReader]
+
+def readCsvByCol(csvReader, col):
+    return [row[col] for row in csvReader]
 
 # cols specifies the cols to retrive from CSV (0 indexed)
 # e.g. cols = [0,1,3], get cols 0, 1 and 3 from csv and ignore the rest
@@ -83,17 +91,9 @@ def readCsvByCols(csvReader, cols):
     # remove all empty lists
     return [item for item in data if item]
 
-def readCsvByCol(csvReader, col):
-    # rows = []
-    # # checks if username already
-    # for row in csvReader:
-    #     rows.append(row)
-    # return rows
 
-    # return below is equivalent to the above 
-    return [row[col] for row in csvReader]
 
-def readFileU(filename, cols = []):
+def readFile(filename, cols = []):
     try:
         with open(filename, 'r') as f:
             csvReader = csv.reader(f)
@@ -112,29 +112,65 @@ def readFileU(filename, cols = []):
     except IOError:
         print("Initialising CSV database...")
 
+
+def getByID(filename, ID):
+    try:
+        with open(filename, 'r') as f:
+            csvReader = csv.reader(f)
+
+            if csvHasHeader(filename):
+                headers = next(csvReader, None)  # skip the headers
+                print(f'csv file has headers: {headers}')
+
+            for row in csvReader:
+                if ID in row:
+                    return row
+
+            return None
+            
+    except IOError:
+        print("Initialising CSV database...")
+
+
 # reads as a dict
 def readFileIntoDict(filename, cols = []):
     try:
         with open(filename, 'r') as f:
             csvReader = csv.DictReader(f, delimiter=',')
 
-            if csvHasHeader(filename):
-                headers = next(csvReader, None)  # skip the headers
-                print(f'Headers: {headers}')
-                
-                if len(cols) > 1:
-                    return readCsvByCols(csvReader, cols)
-                elif len(cols) == 1:
-                    return readCsvByCol(csvReader, cols[0])
-
-                # returns list of dicts
-                return readCsv(csvReader)
-                
-            else:
+            if not csvHasHeader(filename):
                 print('cannot turn into a dict without headers')
+                return None
+                
+            if len(cols) > 1:
+                firstRow = next(csvReader)
+
+                # initialise list of empty lists
+                data = [[] for _ in firstRow]
+
+                # fill each empty list with the corresponding element in first row
+                # e.g. [[gab], [1], [1]]
+                for i, v in enumerate(firstRow.values()):
+                    if i in cols:
+                        data[i].append(v)
+
+                # same as above but with the rest of the elements if any
+                # e.g. [[gab, jack], [1, 2], [1, 2]]
+                for row in csvReader:
+                    for j, v in enumerate(row.values()):
+                        if j in cols:
+                            data[j].append(v)
+
+                return [item for item in data if item]
+                # return readCsvByCols(csvReader, cols)
+            elif len(cols) == 1:
+                return readCsvByCol(csvReader, cols[0])
+
+            # returns list of dicts
+            return readCsv(csvReader)
+                
 
     except IOError:
-
         print("Initialising CSV database...")
         print('No such file or other error')
     
